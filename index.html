@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css"/>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.2/angular-animate.min.js"></script>
+    <script src="script.js"></script>
+  </head>
+
+ <body ng-app='WikiApp' ng-controller="myCtrl">
+  <div id='form' class='fullHeight'>
+    <a href='https://en.wikipedia.org/wiki/Special:Random' target="_blank">Click here for a random article</a><br>
+      <div id='formText'>
+      <form ng-submit="search()">
+        <input type="text" ng-module='searchText'>
+        <button type="reset"><hr id='down'></hr><hr id='up'></hr></button>
+      </form>
+      <hr></hr>
+    </div>
+    <p>Click icon to search</p>
+  </div>
+  <div id='results'>
+  <ul ng-repeat="result in results"><a ng-href="{{result.page}}" target="_blank">
+    <li>
+      <h1>{{result.title}}</h1>
+      <p>{{result.body}}</p>
+    </li></a>
+    </ul></div>
+</body>
+</html>
