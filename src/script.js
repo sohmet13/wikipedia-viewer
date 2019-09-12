@@ -1,3 +1,7 @@
+import angular from 'angular';
+
+import './style.scss';
+
 var app = angular.module('WikiApp', []);
 app.controller('myCtrl', function($scope, $http) {
   const formText = $('#formText');
