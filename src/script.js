@@ -1,76 +1,52 @@
 import angular from 'angular';
+import $ from 'jquery';
 
 import './style.scss';
 
-var app = angular.module('WikiApp', []);
-app.controller('myCtrl', function($scope, $http) {
-  const formText = $('#formText');
-  const hr = $('div>hr');
-  const form = $("form");
-  const input = $('input');
-  const up = $('#up');
-  const down = $('#down');
-  const htmlBody = $('html, body');
-  $scope.load ='Click icon to search';
-  $scope.open = () => {
-    formText.css({cursor: 'auto'});
-    hr.animate({width: "0"}, 200, function() {
-      form.css({display: 'block'});
-      input.focus();
-      formText.animate({width: "270px"}, 200, function() {
-        up.animate({width: "20px"}, 200, function() {
-        down.animate({width: "20px"}, 200);
-        });
-      });
-    }); 
-  };
+const app = angular.module('WikiApp', []);
+app.controller('myCtrl', ($scope, $http) => {
+  const placeholder = 'Click icon for search';
+  $scope.load = placeholder;
+
   $scope.search = () => {
     $scope.load = 'Loading...';
-    htmlBody.css({
-      justifyContent: 'flex-start'
-    });  
-    formText.css({
-      marginTop: '10px'
-    }); 
-    getData();
-  }
-  function getData() {
-    let pattern = $("input").val();
+    $('.wiki-app').addClass('wiki-app_flex-start');
+    $('.search-form').addClass('search-form_m-t-10');
     $scope.results = [];
-    let url ='https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&list=&generator=search&exsentences=1&exlimit=max&exintro=1&explaintext=1&gsrnamespace=&gsrlimit=10&gsrsearch='+pattern+'&callback=JSON_CALLBACK';
-    $http.jsonp(url)
-      .success(function(data) {
-       if (data.hasOwnProperty('query')) {
-         let pages = data.query.pages;
-         $scope.load = '';
-         angular.forEach(pages, function(v) {
-         $scope.results.push({title: v.title, body: v.extract, page: 'https://en.wikipedia.org/?curid=' + v.pageid})
-        });
-       } else {
-         $scope.load = 'Failed to find results in English Wikipedia on your request';
-       }
-    })
-    .error(function() {
-      $scope.load = 'Error occured';
-    })
-  }
-  $scope.close = () => {
+    $http
+      .get('https://en.wikipedia.org//w/api.php?' +
+              'action=query&format=json&prop=extracts&list=&generator=search&exsentences=1&exlimit=max&exintro=1&explaintext=1' +
+              '&gsrnamespace=&gsrlimit=10&gsrsearch=' + $scope.pattern)
+      .then(success, error);
+  };
+
+  $scope.toggleForm = () => {
     $scope.results = [];
-    $scope.load ='Click icon to search';
-    htmlBody.css({
-      justifyContent: 'center'
-    }); 
-    formText.css({
-      marginTop: '0'
-    }); 
-    up.animate({width: "0"}, 200, function() {
-      down.animate({width: "0"}, 200,  function() {
-        form.css({display: 'none'});
-        formText.animate({width: "30px"}, 200, function(){
-          formText.css({cursor: 'pointer'});
-          hr.animate({width: "20px"}, 200);
+    $scope.load = placeholder;
+    $('.wiki-app').removeClass('wiki-app_flex-start');
+    $('.search-form').removeClass('search-form_m-t-10');
+    $('.search-form__pattern').focus();
+    $('.search-form__close-button').toggleClass('search-form__close-button_show-lines');
+    $('.search-form').toggleClass('search-form_open');
+  };
+
+  function success(data) {
+    if (Object.prototype.hasOwnProperty.call(data, 'query')) {
+      $scope.load = '';
+      angular.forEach(data.query.pages, (page) => {
+        $scope.results.push({
+          title: page.title,
+          body: page.extract,
+          page: `https://en.wikipedia.org/?curid=${page.pageid}`
         });
       });
-    });
-  };
+    } else {
+      $scope.load = 'Failed to find results in English Wikipedia on your request';
+    }
+  }
+
+  function error(error) {
+    console.warn(error);
+    $scope.load = 'Can\'t get the results of your request';
+  }
 });

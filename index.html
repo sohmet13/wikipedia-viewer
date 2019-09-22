@@ -2,33 +2,31 @@
 
 <html>
   <head>
-    <!--<link rel="stylesheet" href="style.css">-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>-->
 	  <script type="text/javascript" src="dist/bundle.js" charset="utf-8"></script>
   </head>
 
-	<body ng-app='WikiApp' ng-controller="myCtrl">
-	  <div id='form'>
-	    <p><a href='https://en.wikipedia.org/wiki/Special:Random' target="_blank">Click here for a random article</a></p>
-	      <div id='formText' ng-click='open()'>
-	        <form ng-submit="search()">
-	          <input type="text">
-	          <button type='reset' ng-click='close()'><hr id='down'></hr><hr id='up'></hr></button>
-	        </form>
-	        <hr></hr>
-	      </div>
-	    <p>{{load}}</p>
+  <body ng-app='WikiApp' ng-controller="myCtrl">
+  <div class="wiki-app">
+	  <div class='search'>
+		  <a class="search__random-article href" href='https://en.wikipedia.org/wiki/Special:Random' target="_blank">
+			  Click here for a random article
+		  </a>
+			  <form class="search-form" ng-submit="search()">
+				  <input class="search-form__pattern" type="text" ng-model="pattern">
+				  <button class="search-form__close-button" type='reset' ng-click='toggleForm()'></button>
+			  </form>
+		  <p>{{load}}</p>
 	  </div>
-	  <div id='results'>
-	    <ul ng-repeat="result in results">
-	        <li>
-	          <a ng-href="{{result.page}}" target="_blank">
-	            <p id='head'>{{result.title}}</p>
-	            <p id='text'>{{result.body}}</p>
-	          </a>
-	        </li>
-	    </ul>
+	  <div>
+		  <ul class='results'>
+			  <li class="results__item" ng-repeat="result in results">
+				  <a class="results__item-href href" ng-href="{{result.page}}" target="_blank">
+					  <p class='results__item-header'>{{result.title}}</p>
+					  <p class='results__item-text'>{{result.body}}</p>
+				  </a>
+			  </li>
+		  </ul>
 	  </div>
-	</body>
+  </div>
+  </body>
 </html>
